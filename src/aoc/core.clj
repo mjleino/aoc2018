@@ -26,15 +26,26 @@
   (with-open [rdr (clojure.java.io/reader filename)]
     (doall (line-seq rdr))))
 
-(defn count-twos-threes [label]
-  (let [freqs (vals (frequencies label))]
-    [(some true? (map #(= 2 %) freqs)) (some true? (map #(= 3 %) freqs))]))
+(defn has-exact-match [number collection]
+  (some true? (map (partial = number) collection)))
 
-(defn sum-twos-threes [[total-twos total-threes] [twos threes]]
-  [(+ total-twos (if twos 1 0)) (+ total-threes (if threes 1 0))])
+(defn find-twos-threes [label]
+  (let [freqs (vals (frequencies label))]
+    [(has-exact-match 2 freqs)
+     (has-exact-match 3 freqs)]))
+
+(defn inc-if-true [n condition]
+  (if condition (inc n) n))
+
+(defn sum-twos-threes [[sum-twos sum-threes] [has-twos has-threes]]
+  [(inc-if-true sum-twos has-twos)
+   (inc-if-true sum-threes has-threes)])
 
 (defn task-2-1 [filename]
-  (reduce sum-twos-threes [0 0] (map count-twos-threes (read-lines filename))))
+  (reduce * (reduce
+             sum-twos-threes
+             [0 0]
+             (map find-twos-threes (read-lines filename)))))
 
 (defn -main []
   ; (println "Day 1 (task 1):" (task-1-1 "resources/1-1.txt"))
