@@ -2,6 +2,7 @@
   :description "Advent of Code 2018"
   :dependencies [
     [org.clojure/clojure "1.9.0"]
+    [org.clojure/math.combinatorics "0.1.4"]
   ]
   :plugins [
     [jonase/eastwood "0.3.3"]

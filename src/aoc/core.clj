@@ -1,5 +1,6 @@
 (ns aoc.core
-  (:gen-class))
+  (:gen-class)
+  (:require [clojure.math.combinatorics :as combo]))
 
 (defn parse-int [n] (Integer/parseInt n))
 
@@ -47,8 +48,34 @@
              [0 0]
              (map find-twos-threes (read-lines filename)))))
 
+(defn pair-equals [[a b]]
+  (= a b))
+
+(defn count-char-diff [[a b]]
+  (count (remove true? (map pair-equals (map vector a b)))))
+
+(defn too-different [a]
+  (not= 1 (count-char-diff a)))
+
+(defn drop-different [common [c include?]]
+  (if include? (str common c) common))
+
+(defn common-chars [[a b]]
+  (reduce
+   drop-different
+   ""
+   (map vector a (map pair-equals (map vector a b)))))
+
+(defn task-2-2 [filename]
+  (common-chars
+   (first ; we know there's only one pair that is not too-different
+    (drop-while
+     too-different
+     (combo/combinations (read-lines filename) 2)))))
+
 (defn -main []
-  ; (println "Day 1 (task 1):" (task-1-1 "resources/1-1.txt"))
-  ; (println "Day 1 (task 2):" (task-1-2 "resources/1-1.txt"))
-  (println "Day 2 (task 1):" (task-2-1 "resources/2-1.txt")))
+  (println "Day 1 (task 1):" (task-1-1 "resources/1-1.txt"))
+  (println "Day 1 (task 2):" (task-1-2 "resources/1-1.txt"))
+  (println "Day 2 (task 1):" (task-2-1 "resources/2-1.txt"))
+  (println "Day 2 (task 2):" (task-2-2 "resources/2-1.txt")))
 
